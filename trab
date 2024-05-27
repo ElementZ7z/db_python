@@ -1,35 +1,44 @@
 import sqlite3
 
-# Conectar ao banco de dados (ou criar se não existir)
-conn = sqlite3.connect('notastrab.db')
+# Função para criar o banco de dados e a tabela
+def criarbanco():
+    connection = sqlite3.connect('trabp.db')
+    cursor = connection.cursor()
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS alunos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL,
+        materia TEXT NOT NULL,
+        nota REAL NOT NULL
+    )
+    ''')
+    connection.commit()
+    connection.close()
 
-# Criar um cursor
-cursor = conn.cursor()
+# Função para inserir um aluno, matéria e nota
+def inserir_aluno(nome, materia, nota):
+    connection = sqlite3.connect('trabp.db')
+    cursor = connection.cursor()
+    cursor.execute('INSERT INTO alunos (nome, materia, nota) VALUES (?, ?, ?)', (nome, materia, nota))
+    connection.commit()
+    connection.close()
 
-# Criar uma tabela
-cursor.execute ('''
-CREATE TABLE IF NOT EXISTS alunos (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT NOT NULL,
-    materia TEXT NOT NULL UNIQUE
-    nota REAL NOT NULL
-)
-''')
+# Função para consultar todos os dados da tabela alunos
+def consultar():
+    connection = sqlite3.connect('trabp.db')
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM alunos')
+    rows = cursor.fetchall()
+    connection.close()
+    for row in rows:
+        print(row)
 
-# Inserir dados
-cursor.execute('''
-INSERT INTO alunos (nome, materia, nota) VALUES (?, ?)
-''', ("João Silva", "Ciencias, 4.5"))
+# Função para deletar um aluno pelo ID
+def excluir_aluno(aluno_id):
+    connection = sqlite3.connect('trabp.db')
+    cursor = connection.cursor()
+    cursor.execute('DELETE FROM alunos WHERE id = ?', (aluno_id,))
+    connection.commit()
+    connection.close()
+    print("Aluno deletado com sucesso!")
 
-# Confirmar as alterações
-conn.commit()
-
-# Consultar dados
-cursor.execute('SELECT * FROM alunos')
-rows = cursor.fetchall()
-
-for row in rows:
-    print(row)
-
-# Fechar a conexão
-conn.close()
