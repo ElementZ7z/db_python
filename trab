@@ -1,0 +1,35 @@
+import sqlite3
+
+# Conectar ao banco de dados (ou criar se não existir)
+conn = sqlite3.connect('notastrab.db')
+
+# Criar um cursor
+cursor = conn.cursor()
+
+# Criar uma tabela
+cursor.execute ('''
+CREATE TABLE IF NOT EXISTS alunos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    materia TEXT NOT NULL UNIQUE
+    nota REAL NOT NULL
+)
+''')
+
+# Inserir dados
+cursor.execute('''
+INSERT INTO alunos (nome, materia, nota) VALUES (?, ?)
+''', ("João Silva", "Ciencias, 4.5"))
+
+# Confirmar as alterações
+conn.commit()
+
+# Consultar dados
+cursor.execute('SELECT * FROM alunos')
+rows = cursor.fetchall()
+
+for row in rows:
+    print(row)
+
+# Fechar a conexão
+conn.close()
